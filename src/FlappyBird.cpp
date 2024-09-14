@@ -56,11 +56,13 @@ void FlappyBird::Init()
     m_Shader->setUniformMat4f("u_Projection", m_Projection);
     m_Shader->setUniformMat4f("u_View", m_View);
 
+    //The 4 textures
     m_Textures.push_back(new Texture("res/Textures/bluebird1.png"));
     m_Textures.push_back(new Texture("res/Textures/bluebird2.png"));
     m_Textures.push_back(new Texture("res/Textures/bluebird3.png"));
     m_Textures.push_back(new Texture("res/Textures/bluebird4.png"));
 
+    //Bind the first one for now
     m_Textures[0]->bind();
 
     m_Shader->setUniform1i("u_Texture", 0);
