@@ -42,7 +42,7 @@ void FlappyBird::Init()
     layout.push<float>(3);  // 3 floats per vertex (x, y, z)
     m_VAO.addBuffer(*m_VBO, layout);
 
-    m_Shader = new Shader("res/Basic.shader");
+    m_Shader = new Shader("res/Shaders/Basic.shader");
     m_Shader->bind();
 
     m_Projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
