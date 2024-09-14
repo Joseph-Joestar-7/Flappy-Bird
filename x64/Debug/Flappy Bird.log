@@ -1,22 +1,8 @@
 ﻿  FlappyBird.cpp
-  IndexBuffer.cpp
-C:\Users\HP\Desktop\CS Playground\OpenGL\Projects\Flappy Bird\src\vendor\glm\gtx\transform.hpp(23,1): error C1189: #error:  "GLM: GLM_GTX_transform is an experimental extension and may change in the future. Use #define GLM_ENABLE_EXPERIMENTAL before including it, if you really want to use it."
-  (compiling source file 'src/FlappyBird.cpp')
-  
   Main.cpp
-  Pipe.cpp
-C:\Users\HP\Desktop\CS Playground\OpenGL\Projects\Flappy Bird\src\Pipe.cpp(28,14): error C2039: 'drawRectangle': is not a member of 'Renderer'
-  C:\Users\HP\Desktop\CS Playground\OpenGL\Projects\Flappy Bird\src\Renderer.h(17,7):
-  see declaration of 'Renderer'
-  
-C:\Users\HP\Desktop\CS Playground\OpenGL\Projects\Flappy Bird\src\Pipe.cpp(29,14): error C2039: 'drawRectangle': is not a member of 'Renderer'
-  C:\Users\HP\Desktop\CS Playground\OpenGL\Projects\Flappy Bird\src\Renderer.h(17,7):
-  see declaration of 'Renderer'
-  
-  Renderer.cpp
-  Shader.cpp
-  glm.cpp
-  VertexArray.cpp
-C:\Users\HP\Desktop\CS Playground\OpenGL\Projects\Flappy Bird\src\VertexArray.cpp(25,3): warning C4312: 'type cast': conversion from 'unsigned int' to 'const void *' of greater size
   VertexBuffer.cpp
   Generating Code...
+glew32s.lib(glew.obj) : warning LNK4099: PDB '' was not found with 'glew32s.lib(glew.obj)' or at ''; linking object as if no debug info
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Flappy Bird.vcxproj -> C:\Users\HP\Desktop\CS Playground\OpenGL\Projects\Flappy Bird\x64\Debug\Flappy Bird.exe

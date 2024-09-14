@@ -7,7 +7,6 @@ FlappyBird::FlappyBird()
     m_BirdVelocity(glm::vec3(0.0f, 0.0f, 0.0f)),
     m_Gravity(-0.5f),
     m_JumpVelocity(0.4f),
-    m_PipeSpawnTime(0.0f),
     m_GameOver(false)
 {
     Init();
@@ -54,8 +53,6 @@ void FlappyBird::Init()
 
     m_Renderer = new Renderer();
 
-    // Initialize the first pipe
-    m_Pipes.emplace_back(1.0f, 0.0f);  // Position of first pipe
 }
 
 void FlappyBird::Restart()
@@ -63,8 +60,6 @@ void FlappyBird::Restart()
     m_BirdPos = glm::vec3(-0.5f, 0.0f, 0.0f);
     m_BirdVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
     m_GameOver = false;
-    m_Pipes.clear();
-    m_Pipes.emplace_back(1.0f, 0.0f);  // Restart with the first pipe
 }
 
 void FlappyBird::ProcessInput(float deltaTime)
@@ -80,12 +75,24 @@ void FlappyBird::ProcessInput(float deltaTime)
 
 void FlappyBird::Update(float deltaTime)
 {
-    
+    // Apply gravity to the bird
+    m_BirdVelocity.y += m_Gravity * deltaTime;
+    m_BirdPos += m_BirdVelocity * deltaTime;
 }
 
 void FlappyBird::Render()
 {
     GLCall(glClear(GL_COLOR_BUFFER_BIT));
+
+    m_Shader->bind();
+
+    // Render the bird
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), m_BirdPos);  
+    m_Shader->setUniformMat4f("u_Model", model);
+    m_Shader->setUniform4f("uColor", 1.0f, 1.0f, 0.0f, 1.0f);  // Yellow color for the bird
+    m_VAO.bind();
+    m_IBO->Bind(); 
+    m_Renderer->draw(m_VAO, *m_IBO, *m_Shader, GL_TRIANGLES); 
 
    
 }

@@ -1,4 +1,6 @@
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
 #include "VertexArray.h"
@@ -22,8 +24,27 @@ private:
     Shader* m_Shader;
     Renderer* m_Renderer;
 
+    bool m_GameOver;
+
+    //Properties of the Bird
+    glm::vec3 m_BirdPos;
+    glm::vec3 m_BirdVelocity;
+    float m_Gravity;
+    float m_JumpVelocity;
+
+
+    //Projections and View Matrices
+    glm::mat4 m_Projection;
+    glm::mat4 m_View;
 
 public:
     FlappyBird();
-    ~FlappyBird();    
+    ~FlappyBird();   
+
+    void Init();
+    void Restart();
+    void ProcessInput(float deltaTime);
+    void Update(float deltaTime);
+    void Render();
+    void CheckCollisions();
 };
