@@ -24,7 +24,7 @@ private:
     IndexBuffer* m_IBO;
     Shader* m_Shader;
     Renderer* m_Renderer;
-    Texture* m_Texture;
+    std::vector<Texture*> m_Textures;
 
     bool m_GameOver;
 
@@ -33,6 +33,7 @@ private:
     glm::vec3 m_BirdVelocity;
     float m_Gravity;
     float m_JumpVelocity;
+    float m_AnimationTime;
 
 
     //Projections and View Matrices

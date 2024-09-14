@@ -1362,9 +1362,4 @@
     </None>
     <None Include="res\Shaders\Basic.shader" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\Textures\bluebird.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
 </Project>

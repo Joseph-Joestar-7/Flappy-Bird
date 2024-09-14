@@ -18,17 +18,20 @@ FlappyBird::~FlappyBird()
     delete m_IBO;
     delete m_Shader;
     delete m_Renderer;
-    delete m_Texture;
+    for (Texture* texture : m_Textures) {
+        delete texture;
+    }
+    m_Textures.clear();
 }
 
 void FlappyBird::Init()
 {
     // Initialize bird vertices and the texture coords
     float birdVertices[] = {
-        -0.05f, -0.05f, 0.0f,  0.0f, 0.0f,  // Bottom-left
-         0.05f, -0.05f, 0.0f,  1.0f, 0.0f,  // Bottom-right
-         0.05f,  0.05f, 0.0f,  1.0f, 1.0f,  // Top-right
-        -0.05f,  0.05f, 0.0f,  0.0f, 1.0f,   // Top-left
+    -0.05f, -0.05f, 0.0f,  0.165f, 0.165f,  // Bottom-left
+     0.05f, -0.05f, 0.0f,  0.95f, 0.165f,  // Bottom-right
+     0.05f,  0.05f, 0.0f,  0.95f, 0.95f,  // Top-right
+    -0.05f,  0.05f, 0.0f,  0.165f, 0.95f   // Top-left
     };
 
     unsigned int birdIndices[] = {
@@ -53,8 +56,12 @@ void FlappyBird::Init()
     m_Shader->setUniformMat4f("u_Projection", m_Projection);
     m_Shader->setUniformMat4f("u_View", m_View);
 
-    m_Texture = new Texture("res/Textures/bluebird.png");
-    m_Texture->bind();
+    m_Textures.push_back(new Texture("res/Textures/bluebird1.png"));
+    m_Textures.push_back(new Texture("res/Textures/bluebird2.png"));
+    m_Textures.push_back(new Texture("res/Textures/bluebird3.png"));
+    m_Textures.push_back(new Texture("res/Textures/bluebird4.png"));
+
+    m_Textures[0]->bind();
 
     m_Shader->setUniform1i("u_Texture", 0);
 
@@ -85,6 +92,16 @@ void FlappyBird::Update(float deltaTime)
     // Apply gravity to the bird
     m_BirdVelocity.y += m_Gravity * deltaTime;
     m_BirdPos += m_BirdVelocity * deltaTime;
+
+    // Update animation time
+    m_AnimationTime += deltaTime;
+
+    // Alternate between textures based on time
+    float animationCycle = 0.25f;  // How long each frame lasts
+
+    int currentFrame = static_cast<int>(fmod(m_AnimationTime, animationCycle * 4.0f) / animationCycle);
+    m_Textures[currentFrame]->bind(0);
+
 }
 
 void FlappyBird::Render()
@@ -92,7 +109,6 @@ void FlappyBird::Render()
     GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
     m_Shader->bind();
-    m_Texture->bind(0);
 
     // Render the bird
     glm::mat4 model = glm::translate(glm::mat4(1.0f), m_BirdPos);  
@@ -100,8 +116,6 @@ void FlappyBird::Render()
     m_VAO.bind();
     m_IBO->Bind(); 
     m_Renderer->draw(m_VAO, *m_IBO, *m_Shader, GL_TRIANGLES); 
-
-   
 }
 
 void FlappyBird::CheckCollisions()
