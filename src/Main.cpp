@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Renderer.h"
+#include "FlappyBird.h"
 
 int main(void)
 {
@@ -31,11 +32,31 @@ int main(void)
     if (glewInit() != GLEW_OK)
         std::cout << "Error" << std::endl;
 
+    // Delta time tracking
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+
+    FlappyBird game;
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
+
+        // Calculate delta time
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // Process input
+        game.ProcessInput(deltaTime);
+
+        // Update game state
+        game.Update(deltaTime);
+
+        // Render the game
+        game.Render();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
