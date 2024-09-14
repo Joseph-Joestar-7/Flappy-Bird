@@ -13,6 +13,7 @@
 #include "Pipe.h"
 #include "GLFW/glfw3.h"
 #include <iostream>
+#include "Texture.h"
 
 class FlappyBird
 {
@@ -23,6 +24,7 @@ private:
     IndexBuffer* m_IBO;
     Shader* m_Shader;
     Renderer* m_Renderer;
+    Texture* m_Texture;
 
     bool m_GameOver;
 

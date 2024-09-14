@@ -18,16 +18,17 @@ FlappyBird::~FlappyBird()
     delete m_IBO;
     delete m_Shader;
     delete m_Renderer;
+    delete m_Texture;
 }
 
 void FlappyBird::Init()
 {
-    // Initialize bird vertices as a simple square
+    // Initialize bird vertices and the texture coords
     float birdVertices[] = {
-        -0.05f, -0.05f, 0.0f,  // Bottom-left
-         0.05f, -0.05f, 0.0f,  // Bottom-right
-         0.05f,  0.05f, 0.0f,  // Top-right
-        -0.05f,  0.05f, 0.0f   // Top-left
+        -0.05f, -0.05f, 0.0f,  0.0f, 0.0f,  // Bottom-left
+         0.05f, -0.05f, 0.0f,  1.0f, 0.0f,  // Bottom-right
+         0.05f,  0.05f, 0.0f,  1.0f, 1.0f,  // Top-right
+        -0.05f,  0.05f, 0.0f,  0.0f, 1.0f,   // Top-left
     };
 
     unsigned int birdIndices[] = {
@@ -40,6 +41,7 @@ void FlappyBird::Init()
 
     VertexBufferLayout layout;
     layout.push<float>(3);  // 3 floats per vertex (x, y, z)
+    layout.push<float>(2); // for the texture co-ords
     m_VAO.addBuffer(*m_VBO, layout);
 
     m_Shader = new Shader("res/Shaders/Basic.shader");
@@ -50,6 +52,11 @@ void FlappyBird::Init()
 
     m_Shader->setUniformMat4f("u_Projection", m_Projection);
     m_Shader->setUniformMat4f("u_View", m_View);
+
+    m_Texture = new Texture("res/Textures/bluebird.png");
+    m_Texture->bind();
+
+    m_Shader->setUniform1i("u_Texture", 0);
 
     m_Renderer = new Renderer();
 
@@ -85,11 +92,11 @@ void FlappyBird::Render()
     GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
     m_Shader->bind();
+    m_Texture->bind(0);
 
     // Render the bird
     glm::mat4 model = glm::translate(glm::mat4(1.0f), m_BirdPos);  
     m_Shader->setUniformMat4f("u_Model", model);
-    m_Shader->setUniform4f("uColor", 1.0f, 1.0f, 0.0f, 1.0f);  // Yellow color for the bird
     m_VAO.bind();
     m_IBO->Bind(); 
     m_Renderer->draw(m_VAO, *m_IBO, *m_Shader, GL_TRIANGLES); 
