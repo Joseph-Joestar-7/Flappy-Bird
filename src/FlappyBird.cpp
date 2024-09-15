@@ -222,7 +222,7 @@ void FlappyBird::CheckCollisions()
         // Bottom pipe
         float pipeBottomLeft = pipeX - pipeWidth / 2;
         float pipeBottomRight = pipeX + pipeWidth / 2;
-        float pipeBottomTop = gapY - gapHeight / 2 + 1.0f;  // Bottom pipe extends from the bottom to the gap
+        float pipeBottomTop = gapY - gapHeight / 2  ;  // Bottom pipe extends from the bottom to the gap
 
         // Top pipe
         float pipeTopBottom = gapY + gapHeight / 2;
