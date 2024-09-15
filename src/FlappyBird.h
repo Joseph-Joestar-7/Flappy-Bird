@@ -35,7 +35,10 @@ private:
     float m_JumpVelocity;
     float m_AnimationTime;
 
+    //Properties of the Pipe
     std::vector<Pipe*> m_Pipes;
+    float m_PipeSpawnTimer;
+    float m_SpawnInterval;
 
     //Projections and View Matrices
     glm::mat4 m_Projection;
@@ -50,5 +53,6 @@ public:
     void ProcessInput(float deltaTime);
     void Update(float deltaTime);
     void Render();
+    void SpawnNewPipe();
     void CheckCollisions();
 };

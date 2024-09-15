@@ -16,6 +16,9 @@ Pipe::~Pipe()
 
 void Pipe::Init(float pipeWidth, float pipeHeight)
 {
+    // Enable blending for transparency
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // Initialize vertices for both upper and lower pipes
     float vertices[] = {
         // Lower pipe (bottom part of the gap)
@@ -24,12 +27,12 @@ void Pipe::Init(float pipeWidth, float pipeHeight)
          pipeWidth / 2, m_GapHeight, 0.0f,   1.0f, 1.0f,  // Top-right
         -pipeWidth / 2, m_GapHeight, 0.0f,   0.0f, 1.0f,  // Top-left
 
-        // Upper pipe (top part of the gap)
-        -pipeWidth / 2, m_GapHeight + pipeHeight, 0.0f,   0.0f, 0.0f,  // Bottom-left
-         pipeWidth / 2, m_GapHeight + pipeHeight, 0.0f,   1.0f, 0.0f,  // Bottom-right
-         pipeWidth / 2, 1.0f, 0.0f,   1.0f, 1.0f,  // Top-right
-        -pipeWidth / 2, 1.0f, 0.0f,   0.0f, 1.0f   // Top-left
-    };
+        // Upper pipe (flipped to start from top and extend downward)
+        -pipeWidth / 2, 1.0f, 0.0f,   0.0f, 0.0f,  // Bottom-left (start from the top of the screen)
+        pipeWidth / 2, 1.0f, 0.0f,   1.0f, 0.0f,  // Bottom-right
+        pipeWidth / 2, m_GapHeight, 0.0f,   1.0f, 1.0f,  // Top-right (extend downward to the gap height)
+        -pipeWidth / 2, m_GapHeight, 0.0f,   0.0f, 1.0f   // Top-left
+          };
 
     unsigned int indices[] = {
         0, 1, 2,  // Lower pipe triangle 1
@@ -49,7 +52,7 @@ void Pipe::Init(float pipeWidth, float pipeHeight)
     m_Shader = new Shader("res/Shaders/Basic.shader");
     m_Shader->bind();
 
-    m_Projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+    m_Projection = glm::ortho(-1.0f, 1.0f, -0.5f, 1.0f, -1.0f, 1.0f);
     m_View = glm::mat4(1.0f);
 
     m_Shader->setUniformMat4f("u_Projection", m_Projection);
@@ -66,6 +69,7 @@ void Pipe::Update(float deltaTime)
 {
     // Move pipe to the left (similar to scrolling the background)
     m_Pos.x -= 0.5f * deltaTime;  // Adjust speed as necessary
+    
 }
 
 void Pipe::Render()

@@ -18,7 +18,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(1024, 1024, "FLAPPY BIRD", NULL, NULL);
+    window = glfwCreateWindow(1500,1500, "FLAPPY BIRD", NULL, NULL);
     if (!window)
     {
         glfwTerminate();

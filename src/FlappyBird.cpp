@@ -7,7 +7,9 @@ FlappyBird::FlappyBird()
     m_BirdVelocity(glm::vec3(0.0f, 0.0f, 0.0f)),
     m_Gravity(-0.5f),
     m_JumpVelocity(0.4f),
-    m_GameOver(false)
+    m_GameOver(false),
+    m_PipeSpawnTimer(0.0f),
+    m_SpawnInterval(2.0f)
 {
     Init();
 }
@@ -32,6 +34,8 @@ FlappyBird::~FlappyBird()
 
 void FlappyBird::Init()
 {
+    srand(static_cast<unsigned int>(time(0)));
+
     // Initialize bird vertices and the texture coords
     float birdVertices[] = {
     -0.05f, -0.05f, 0.0f,  0.165f, 0.165f,  // Bottom-left
@@ -114,15 +118,40 @@ void FlappyBird::Update(float deltaTime)
     int currentFrame = static_cast<int>(fmod(m_AnimationTime, animationCycle * 4.0f) / animationCycle);
     m_Textures[currentFrame]->bind(0);
 
+    if(!m_GameOver)
+    {
     for (Pipe* pipe : m_Pipes)
     {
         pipe->Update(deltaTime); // Move pipes to the left
+    }
+
+    // Check if we need to spawn a new pipe
+    m_PipeSpawnTimer += deltaTime;
+    if (m_PipeSpawnTimer >= m_SpawnInterval) {
+        m_PipeSpawnTimer = 0.0f;
+        SpawnNewPipe();
+    }
+
+    // Remove pipes that are off the screen or recycle them
+    for (auto it = m_Pipes.begin(); it != m_Pipes.end(); )
+    {
+        if ((*it)->getPosition().x < -1.1f)  // Pipe is off the left side of the screen
+        {
+            delete* it;  // Remove pipe from memory
+            it = m_Pipes.erase(it);  // Remove pipe from the list
+        }
+        else {
+            ++it;
+        }
     }
 
     for (Pipe* pipe : m_Pipes)
     {
         pipe->Render();
     }
+}
+
+    CheckCollisions();
 
 }
 
@@ -146,7 +175,70 @@ void FlappyBird::Render()
 
 }
 
+void FlappyBird::SpawnNewPipe()
+{
+    // Randomize the gap height once when the pipe is created
+    float randomGapHeight = 0.4f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (0.6f - 0.4f)));
+
+    // Add a new pipe to the right side of the screen with a constant gap height
+    m_Pipes.push_back(new Pipe(1.2f, randomGapHeight, 0.15f, 1.0f));
+}
+
+
 void FlappyBird::CheckCollisions()
 {
-    
+    float birdWidth = 0.1f;  // Width of the bird
+    float birdHeight = 0.1f; // Height of the bird
+    float birdLeft = m_BirdPos.x - birdWidth / 2;
+    float birdRight = m_BirdPos.x + birdWidth / 2;
+    float birdBottom = m_BirdPos.y - birdHeight / 2;
+    float birdTop = m_BirdPos.y + birdHeight / 2;
+
+    // Define ground and ceiling boundaries
+    float groundLevel = -1.0f;
+    float ceilingLevel = 1.0f;
+
+    // Check for ground or ceiling collision
+    if (birdBottom <= groundLevel) {
+        m_BirdPos.y = groundLevel + birdHeight / 2;  // Keep the bird at the ground level
+        m_BirdVelocity.y = 0;  // Stop downward velocity
+    }
+
+    if (birdTop >= ceilingLevel) {
+        m_BirdPos.y = ceilingLevel - birdHeight / 2;  // Keep the bird at the ceiling level
+        m_BirdVelocity.y = 0;  // Stop upward velocity
+    }
+
+    // Check for pipe collisions
+    for (Pipe* pipe : m_Pipes) {
+        // Get the pipe's position and size
+        float pipeX = pipe->getPosition().x;
+        float pipeWidth = pipe->getWidth();
+        float pipeHeight = pipe->getHeight();
+        float gapHeight = pipe->getHeight();  // The height of the gap between pipes
+        float gapY = pipe->getPosition().y;   // y-position of the gap center
+
+        // Calculate pipe bounding boxes
+        // Bottom pipe
+        float pipeBottomLeft = pipeX - pipeWidth / 2;
+        float pipeBottomRight = pipeX + pipeWidth / 2;
+        float pipeBottomTop = gapY - gapHeight / 2 + 1.0f;  // Bottom pipe extends from the bottom to the gap
+
+        // Top pipe
+        float pipeTopBottom = gapY + gapHeight / 2;
+        float pipeTopLeft = pipeX - pipeWidth / 2;
+        float pipeTopRight = pipeX + pipeWidth / 2;
+
+        // Check if bird collides with the bottom pipe
+        if (birdRight > pipeBottomLeft && birdLeft < pipeBottomRight && birdBottom < pipeBottomTop) {
+            m_GameOver = true;
+            return;
+        }
+        // Check if bird collides with the top pipe
+        if (birdRight > pipeTopLeft && birdLeft < pipeTopRight && birdTop > pipeTopBottom) {
+            m_GameOver = true;
+            return;
+        }
+    }
+
 }
