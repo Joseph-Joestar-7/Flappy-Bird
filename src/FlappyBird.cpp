@@ -22,6 +22,12 @@ FlappyBird::~FlappyBird()
         delete texture;
     }
     m_Textures.clear();
+
+    for (Pipe* pipe : m_Pipes)
+    {
+        delete pipe;
+    }
+    m_Pipes.clear();
 }
 
 void FlappyBird::Init()
@@ -63,11 +69,15 @@ void FlappyBird::Init()
     m_Textures.push_back(new Texture("res/Textures/bluebird4.png"));
 
     //Bind the first one for now
-    m_Textures[0]->bind();
+    m_Textures[0]->bind(0);
 
     m_Shader->setUniform1i("u_Texture", 0);
 
     m_Renderer = new Renderer();
+    
+    m_Pipes.push_back(new Pipe(0.7f, 0.5f, 0.15f, 1.0f));  // First pipe
+    m_Pipes.push_back(new Pipe(1.2f, 0.45f, 0.15f, 1.0f)); // Second pipe
+    m_Pipes.push_back(new Pipe(1.7f, 0.55f, 0.15f, 1.0f)); // Third pipe
 
 }
 
@@ -104,6 +114,16 @@ void FlappyBird::Update(float deltaTime)
     int currentFrame = static_cast<int>(fmod(m_AnimationTime, animationCycle * 4.0f) / animationCycle);
     m_Textures[currentFrame]->bind(0);
 
+    for (Pipe* pipe : m_Pipes)
+    {
+        pipe->Update(deltaTime); // Move pipes to the left
+    }
+
+    for (Pipe* pipe : m_Pipes)
+    {
+        pipe->Render();
+    }
+
 }
 
 void FlappyBird::Render()
@@ -118,6 +138,12 @@ void FlappyBird::Render()
     m_VAO.bind();
     m_IBO->Bind(); 
     m_Renderer->draw(m_VAO, *m_IBO, *m_Shader, GL_TRIANGLES); 
+
+    for (Pipe* pipe : m_Pipes)
+    {
+        pipe->Render();
+    }
+
 }
 
 void FlappyBird::CheckCollisions()

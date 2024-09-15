@@ -10,11 +10,10 @@
 #include <vector>
 #include <string>
 #include "glm/glm.hpp"
-#include "Pipe.h"
 #include "GLFW/glfw3.h"
 #include <iostream>
 #include "Texture.h"
-
+#include "Pipe.h"
 class FlappyBird
 {
 private:
@@ -22,6 +21,7 @@ private:
     VertexArray m_VAO;
     VertexBuffer* m_VBO;
     IndexBuffer* m_IBO;
+    
     Shader* m_Shader;
     Renderer* m_Renderer;
     std::vector<Texture*> m_Textures;
@@ -35,6 +35,7 @@ private:
     float m_JumpVelocity;
     float m_AnimationTime;
 
+    std::vector<Pipe*> m_Pipes;
 
     //Projections and View Matrices
     glm::mat4 m_Projection;

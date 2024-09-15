@@ -1,7 +1,10 @@
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include "Texture.h"
 #include "VertexArray.h"
 #include "IndexBuffer.h"
+#include "VertexBufferLayout.h"
 #include "Shader.h"
 #include "Renderer.h"
 #include <glm/glm.hpp>
@@ -13,7 +16,7 @@ public:
     ~Pipe();
 
     void Update(float deltaTime);
-    void Render(const Shader& shader, Renderer& renderer);
+    void Render();
 
     glm::vec3 getPosition() const { return m_Pos; }
     float getWidth() const { return m_PipeWidth; }
@@ -31,4 +34,10 @@ private:
     VertexArray m_VAO;
     VertexBuffer* m_VBO;
     IndexBuffer* m_IBO;
+    Shader* m_Shader;
+    Renderer* m_Renderer;
+
+    //Projections and View Matrices
+    glm::mat4 m_Projection;
+    glm::mat4 m_View;
 };
